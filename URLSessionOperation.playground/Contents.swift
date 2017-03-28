@@ -1,5 +1,5 @@
-// Source
-// https://medium.com/@raulriera/nsoperations-nsoperationqueue-oh-my-88b707f9ba2e#.pvnq1hr3w
+// Example of a subclass of operation, with where the operation is async
+
 import Foundation
 
 // Need this to make playground wait for the dataTask callback -------------
@@ -12,8 +12,9 @@ public typealias URLSessionOperationCompletion = (_ data: Data?, _ response: HTT
 
 open class URLSessionOperation: Operation {
 	
-	fileprivate var task: URLSessionDataTask?
-//	fileprivate var completionHandler: URLSessionOperationCompletion?
+	private var task: URLSessionDataTask?
+	private var _executing = false
+	private var _finished = false
 	
 	/**
 	Returns an instance of `URLSessionOperation`
@@ -26,7 +27,7 @@ open class URLSessionOperation: Operation {
 		super.init()
 		
 		name = url.absoluteString
-		print("1 setting dataTask for \(name)")
+		print("A setting dataTask for \(name)")
 		task = session.dataTask(with: url) { [weak self] (data: Data?, response: URLResponse?, error: Error?) in
 			self?.completeOperationWithBlock(completion, data: data, response: response as? HTTPURLResponse, error: error)
 		}
@@ -35,49 +36,73 @@ open class URLSessionOperation: Operation {
 	open override func cancel() {
 		super.cancel()
 		task?.cancel()
+		finish()
 		print("dataTask cancel")
 	}
 	
-	
 	open override func start() {
+		
 		if isCancelled {
-			//_finished = true
+			finish()
 		} else {
-			//_executing = true
-			print("2 start(): - resuming dataTask")
+			willChangeValue(forKey: "isExecuting")
+			_executing = true
+			didChangeValue(forKey: "isExecuting")
+			
+			print("B start(): - resuming dataTask for \(self)")
 			task?.resume()
 		}
+	}
+	
+	func finish() {
+		willChangeValue(forKey: "isExecuting")
+		willChangeValue(forKey: "isFinished")
+		_executing = false
+		_finished = true
+		didChangeValue(forKey: "isExecuting")
+		didChangeValue(forKey: "isFinished")
+	}
+	
+	override open var isExecuting: Bool {
+		return _executing
+	}
+	
+	override open var isFinished: Bool {
+		return _finished
 	}
 	
 	// MARK: Private
 	
 	fileprivate func completeOperationWithBlock(_ completion: @escaping URLSessionOperationCompletion, data: Data?, response: HTTPURLResponse?, error: Error?) {
-		print("3 completeOperation w block")
 		if isCancelled == false {
 			DispatchQueue.main.async {
 				completion(data, response, error)
-				print(self.isFinished)
+				self.finish()
 			}
 		}
-		
-		//completeOperation()
-//		completionBlock
 	}
 }
 
 
+
 let url = URL(string: "https://www.youtube.com")!
+let url2 = URL(string: "https://www.youtube.ca")!
 
-let operation = URLSessionOperation(url: url, completion: { _, _ ,_ in print("done 1") })
-let otherOperation = URLSessionOperation(url: url, completion: { _, _ ,_ in print("done 2") })
-otherOperation.addDependency(operation)
+let operation1 = URLSessionOperation(url: url, completion: { _, _ ,_ in
+	sleep(2) // For easier visualization
+	print("C Operation1 Done")
+})
+let operation2 = URLSessionOperation(url: url2, completion: { _, _ ,_ in
+	sleep(2)
+	print("C Operation2 Done")
+})
 
-
+// Note we can add operation1 first in the queue, but start operation1 later
+operation1.addDependency(operation2)
+//operation2.addDependency(operation1)
 
 let queue = OperationQueue()
-queue.maxConcurrentOperationCount = 2
+queue.maxConcurrentOperationCount = 1
 
-queue.addOperation(operation)
-queue.addOperation(otherOperation)
-
-
+queue.addOperation(operation1)
+queue.addOperation(operation2)
