@@ -1,12 +1,14 @@
-// Example of a subclass of operation, with where the operation is async
+// Example of an Operation subclass, where the operation runs asynchronously.
+// Using Operation & OperationQueue, we can allow only a certain number of concurrent operations,
+// or we can make certain calls dependent on other calls.
+// For example, you can run a network call C, only after network call A & B have finished.
 
 import Foundation
 
-// Need this to make playground wait for the dataTask callback -------------
+// Allow asynchronous in Playground
 import PlaygroundSupport
 PlaygroundPage.current.needsIndefiniteExecution = true
 URLCache.shared = URLCache(memoryCapacity: 0, diskCapacity: 0, diskPath: nil)
-// --------------------------------------------------------------------------
 
 public typealias URLSessionOperationCompletion = (_ data: Data?, _ response: HTTPURLResponse?, _ error: Error?) -> Void
 
@@ -37,7 +39,6 @@ open class URLSessionOperation: Operation {
 		super.cancel()
 		task?.cancel()
 		finish()
-		print("dataTask cancel")
 	}
 	
 	open override func start() {
