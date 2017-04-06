@@ -85,24 +85,45 @@ open class URLSessionOperation: Operation {
 
 
 
-let url = URL(string: "https://www.youtube.com")!
-let url2 = URL(string: "https://www.youtube.ca")!
-
-let operation1 = URLSessionOperation(url: url, completion: { _, _ ,_ in
-	sleep(2) // For easier visualization
-	print("C Operation1 Done")
-})
-let operation2 = URLSessionOperation(url: url2, completion: { _, _ ,_ in
-	sleep(2)
-	print("C Operation2 Done")
-})
-
-// Note we can add operation1 first in the queue, but start operation1 later
-operation1.addDependency(operation2)
+//print("Queue 1 --------------------")
+//
+//let url = URL(string: "https://www.youtube.com")!
+//let url2 = URL(string: "https://www.youtube.ca")!
+//
+//let operation1 = URLSessionOperation(url: url, completion: { _, _ ,_ in
+//	sleep(2) // For easier visualization
+//	print("C Operation1 Done")
+//})
+//let operation2 = URLSessionOperation(url: url2, completion: { _, _ ,_ in
+//	sleep(2)
+//	print("C Operation2 Done")
+//})
+//
+//// Note we can add operation1 first in the queue, but start operation1 later
+////operation1.addDependency(operation2)
+//
 //operation2.addDependency(operation1)
+//
+//let queue = OperationQueue()
+//queue.maxConcurrentOperationCount = 1
+//
+//queue.addOperation(operation1)
+//queue.addOperation(operation2)
 
-let queue = OperationQueue()
-queue.maxConcurrentOperationCount = 1
 
-queue.addOperation(operation1)
-queue.addOperation(operation2)
+
+print("Queue 2 --------------------")
+
+let queue2 = OperationQueue()
+queue2.maxConcurrentOperationCount = 1
+
+["https://httpbin.org/user-agent", "https://httpbin.org/delay/3", "https://httpbin.org/gzip"].forEach { URLstring in
+	let operation = URLSessionOperation(url: URL(string: URLstring)!, completion: { _, response ,_ in
+		print("FINISHED: \(response?.url)")
+	})
+	
+	if let lastOperation = queue2.operations.last {
+		operation.addDependency(lastOperation)
+	}
+	queue2.addOperation(operation)
+}
