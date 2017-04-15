@@ -12,7 +12,7 @@ array2.insert(contentsOf: arrayToInsert, at: 2) // [1, 2, 7, 8, 9, 3, 4, 5]
 let indexToInsert = array2.index(where: { $0 == 9 }) ?? 0
 array2.insert(contentsOf: [0, 0, 0], at: indexToInsert) // [1, 2, 7, 8, 0, 0, 0, 9, 3, 4, 5]
 
-// Find item in array. Can do this with classes too, i.e. $0.name == "Lex"
+// Find FIRST item in array. Can do this with classes too, i.e. $0.name == "Lex"
 if let item = arrayToInsert.first(where: { $0 == 8 }) {
 	// item is the first matching array element
 	let item = item // 8

@@ -6,24 +6,20 @@
 
 
 // Each iteration is one item in the array
-let numbers = [1,2,3,4,5,6]
+let oneToSix = [1,2,3,4,5,6]
 
-let newNumbers = numbers.map{ $0 * 2 }
-newNumbers
+let newNumbers = oneToSix.map{ $0 * 2 } // [2, 4, 6, 8, 10, 12]
 
-let newNumbers2 = numbers.flatMap{ $0 * 2 }
-newNumbers2
+let newNumbers2 = oneToSix.flatMap{ $0 * 2 } // [2, 4, 6, 8, 10, 12]
 
 
 
 // Flatmap flattens nested arrays
 let nestedArray = [[1,2,3], [4,5,6]]
 
-let flattenedArray = nestedArray.map { $0 }
-flattenedArray // [[1,2,3], [4,5,6]]
+let flattenedArray = nestedArray.map { $0 } // [[1,2,3], [4,5,6]]
 
-let flattenedArray2 = nestedArray.flatMap { $0 }
-flattenedArray2 // [1, 2, 3, 4, 5, 6]
+let flattenedArray2 = nestedArray.flatMap { $0 } // [1, 2, 3, 4, 5, 6]
 
 
 
@@ -48,5 +44,14 @@ let flattened3 = [2,4,6]                  +    [8,10,12]                // [2, 4
 
 // Take array of optionals and return an array of unwrapped optionals without any nils.
 let optionalInts: [Int?] = [1, 2, nil, 4, nil, 5]
-let ints = optionalInts.flatMap { $0 }
-ints // [1, 2, 4, 5]
+let ints = optionalInts.flatMap { $0 } // [1, 2, 4, 5]
+
+
+
+// Get even numbers w filter, or flatMap
+let evenNumbers = oneToSix.filter { $0 % 2 == 0 } // [2, 4, 6]
+let evenNumbers2 = oneToSix.flatMap { $0 % 2 == 0 ? $0 : nil } // [2, 4, 6]
+
+// Filter AND modify
+let evenNumbersPlus10 = oneToSix.filter { $0 % 2 == 0 }.map { $0 + 10 } // [12, 14, 16] *Easier to read*
+let evenNumbers2Plus10 = oneToSix.flatMap { $0 % 2 == 0 ? $0 + 10 : nil } // [12, 14, 16]
