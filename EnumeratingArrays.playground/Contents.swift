@@ -21,3 +21,25 @@ if let item = arrayToInsert.first(where: { $0 == 8 }) {
 // Find index of item in array
 let index = arrayToInsert.index(where: { $0 == 8})
 index // 1
+
+// Removing a list of items from an array, in place
+// [0, 1, 2, 3, 4] -> remove [2, 4, 9] = [0, 1, 3]
+var array1 = [0, 1, 2, 3, 4]
+array1 = array1.filter { !array2.contains($0) } // [0, 1, 3]
+
+
+// removeFirst from empty array
+class Foo {
+	var a: Int
+	var b: Int
+	
+	init(a: Int, b: Int) {
+		self.a = a
+		self.b = b
+	}
+}
+
+var fooArray = [Foo(a: 1, b: 2), Foo(a: 3, b: 4)] // [{a 1, b 2}, {a 3, b 4}]
+fooArray.removeFirst()
+fooArray.removeFirst()
+fooArray.removeFirst() // fatal error: can't remove first element from an empty collection
