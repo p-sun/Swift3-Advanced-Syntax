@@ -42,4 +42,4 @@ class Foo {
 var fooArray = [Foo(a: 1, b: 2), Foo(a: 3, b: 4)] // [{a 1, b 2}, {a 3, b 4}]
 fooArray.removeFirst()
 fooArray.removeFirst()
-fooArray.removeFirst() // fatal error: can't remove first element from an empty collection
+//fooArray.removeFirst() // fatal error: can't remove first element from an empty collection

@@ -10,3 +10,15 @@ extension Array where Element == Int {
 
 array.appendOne()
 array.appendOne()
+
+extension Optional where Wrapped == String {
+	var isNilOrEmpty: Bool {
+		return self?.isEmpty ?? true
+	}
+}
+var optionalString: String? = "a"
+optionalString.isNilOrEmpty // false
+optionalString = nil
+optionalString.isNilOrEmpty // true
+optionalString = ""
+optionalString.isNilOrEmpty // true

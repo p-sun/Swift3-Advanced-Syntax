@@ -12,7 +12,7 @@ let newNumbers = oneToSix.map{ $0 * 2 } // [2, 4, 6, 8, 10, 12]
 
 let newNumbers2 = oneToSix.flatMap{ $0 * 2 } // [2, 4, 6, 8, 10, 12]
 
-
+let sum = oneToSix.reduce(0, +)
 
 // Flatmap flattens nested arrays
 let nestedArray = [[1,2,3], [4,5,6]]
@@ -55,3 +55,26 @@ let evenNumbers2 = oneToSix.flatMap { $0 % 2 == 0 ? $0 : nil } // [2, 4, 6]
 // Filter AND modify
 let evenNumbersPlus10 = oneToSix.filter { $0 % 2 == 0 }.map { $0 + 10 } // [12, 14, 16] *Easier to read*
 let evenNumbers2Plus10 = oneToSix.flatMap { $0 % 2 == 0 ? $0 + 10 : nil } // [12, 14, 16]
+
+
+
+/// Reduce
+let abc = ["aaa", "bbb", "ccc"]
+//let oneString = abc.reduce("", { result, element in
+//	result += element
+//})
+//oneString
+
+let totalString = abc.reduce("", +) // "aaabbbccc"
+let totalString2 = abc.reduce("", { // " aaa bbb ccc"
+	//print("result:\($0)| element:\($1)")
+	return $0 + " " + $1
+})
+
+let totalString3 = abc.joined(separator: "\n")
+
+let isEveryoneAThree = [3, 3, 3, 3, 3].reduce(true) { return $0 && $1 == 3 } // true
+
+
+let someArray = [1,2,3,4,5,6] + [nil]
+let addEmptyArrays: [Int] = [] + []
