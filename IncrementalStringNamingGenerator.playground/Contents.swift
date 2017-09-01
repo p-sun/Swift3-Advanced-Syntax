@@ -72,27 +72,24 @@ RESULT <12> LOCATION 0 LENGTH 2
 func generateIncrementingNames(from name: String?, count: Int) -> [String?] {
 	guard count > 0 else { return [] }
 	guard count != 1 else { return [name] }
-	
-	// If name is empty, generate nils
 	guard name?.isEmpty == false else { return [name] + Array(repeatElement(nil, count: count - 1)) }
 	
-	// If name ends in a number, get the number
 	var name = name ?? ""
 	let matches = name.matches("[0-9]*[0-9]$")
-	let endingNumber = Int(matches.first?.result ?? "")
+	let endingNumber = Int(matches.last?.result ?? "")
 	
 	// Calculate prefix
-	var prefix: String
+	let prefix: String
 	if endingNumber != nil {
 		let prefixEndIndex = matches.last!.range.location
 		prefix = (name as NSString).substring(to: prefixEndIndex)
 	} else {
 		// Append "-" to prefix if it doesn't exist already
-		prefix = name.characters.last == "-" ? name : "\(name)-"
+		prefix = name.characters.last == "-" ? name : name.appending("-")
 	}
 	
 	// Generated name = prefix + incrementing number
-	return Array(0..<count).map {
+	return (0..<count).map {
 		prefix + "\((endingNumber ?? 1) + $0)"
 	}
 }
@@ -118,6 +115,11 @@ generateIncrementingNames(from: "any", count: 3)
 generateIncrementingNames(from: "any-", count: 3)
 // ["any-1", "any-2", "any-3"]
 
+generateIncrementingNames(from: "FOO123BAR456", count: 3)
+
+generateIncrementingNames(from: "BAR099", count: 3)
+
+
 // ------------------------------------------------------------
 // Separate numbers from a string
 let numberComponent = "buy 3 apples 10eggs99"
@@ -126,3 +128,6 @@ Int(numberComponent.last ?? "")
 // 99
 numberComponent.filter { $0 != ""}
 // ["3", "10", "99"]
+
+//var x: Int32 = 0
+//x = 2758822902 // integer overflow CRASH
