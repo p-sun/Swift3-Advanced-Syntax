@@ -78,3 +78,8 @@ let isEveryoneAThree = [3, 3, 3, 3, 3].reduce(true) { return $0 && $1 == 3 } // 
 
 let someArray = [1,2,3,4,5,6] + [nil]
 let addEmptyArrays: [Int] = [] + []
+
+var xxx: [[Int]] = [[]]
+xxx.count
+xxx.first?.count
+
